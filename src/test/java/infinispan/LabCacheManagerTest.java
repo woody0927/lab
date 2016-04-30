@@ -1,7 +1,10 @@
 package infinispan;
 
-import idv.woody.infinispan.Cache;
-import idv.woody.infinispan.WordCache;
+import idv.woody.infinispan.CacheName;
+import idv.woody.infinispan.LabCacheManager;
+import org.infinispan.Cache;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,19 +16,28 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:applicationContext.xml"})
-public class CacheTest {
+public class LabCacheManagerTest {
 
     @Autowired
-    private WordCache wordCache;
+    private LabCacheManager labCacheManager;
+
+    @Before
+    public void init() {
+        labCacheManager.start();
+    }
+
+    @After
+    public void tearDown() {
+        labCacheManager.stop();
+    }
 
     @Test
     public void testLocalCache() {
-        wordCache.start();
         String key = randomAlphanumeric(8);
         String value = randomAlphanumeric(8);
+        Cache<String, String> wordCache = labCacheManager.getCache(CacheName.WORD_LOCAL_CACHE);
         assertNull(wordCache.get(key));
         wordCache.put(key, value);
         assertEquals(value, wordCache.get(key));
-        wordCache.stop();
     }
 }

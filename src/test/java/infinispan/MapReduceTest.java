@@ -20,7 +20,7 @@ public class MapReduceTest {
     public void wordCnt() {
         Configuration configuration = new ConfigurationBuilder().indexing().build();
         EmbeddedCacheManager cacheManager = new DefaultCacheManager();
-        String cacheName = "WORD_CACHE";
+        String cacheName = "WORD_LOCAL_CACHE";
         cacheManager.defineConfiguration(cacheName, configuration);
         Cache<String, String> cache = cacheManager.getCache(cacheName);
         cache.put("1", "Hello world here I am");

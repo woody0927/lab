@@ -1,0 +1,24 @@
+<!-- simple local configuration, no clustering, no backend -->
+<in:infinispan xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:infinispan:config:6.0 http://www.infinispan.org/schemas/infinispan-config-6.0.xsd"
+               xmlns:in="urn:infinispan:config:6.0">
+    <in:global>
+        <in:transport>
+            <in:properties>
+                <in:property name="configurationFile" value="jgroups.xml"/>
+            </in:properties>
+        </in:transport>
+    </in:global>
+    <!--caches which are not defined in this file applies the default configuration -->
+    <in:default>
+        <in:clustering mode="local"/>
+        <in:indexing enabled="false"/>
+    </in:default>
+
+    <in:namedCache name="WORD_GLOBAL_CACHE">
+        <in:indexing enabled="false"/>
+        <in:clustering mode="replication">
+            <in:async />
+        </in:clustering>
+        <in:eviction maxEntries="5" strategy="FIFO"/>
+    </in:namedCache>
+</in:infinispan>
