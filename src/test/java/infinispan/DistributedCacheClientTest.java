@@ -19,6 +19,7 @@ public class DistributedCacheClientTest {
     private DistributedCacheClient client;
     @Test
     public void testDistributedCache() throws IOException, InterruptedException {
+        // you can see the values are shared between jgroup channel if two clients are runing at the same time
         client.run();
     }
 }

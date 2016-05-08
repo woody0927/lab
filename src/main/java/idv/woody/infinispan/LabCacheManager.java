@@ -27,6 +27,7 @@ public class LabCacheManager {
             return;
         }
         for(CacheName cacheName : cacheNames) {
+            // The default cache configuration will be used if the cache (name) is not configured
             // getCache(<cache_name>) starts the cache automatically, that's why explicit start is not needed
             caches.putIfAbsent(cacheName, cacheManager.getCache(cacheName.name()));
         }

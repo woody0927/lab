@@ -19,8 +19,10 @@ public class DistributedCacheClient {
         final Cache<String, String> cache = labCacheManager.getCache(CacheName.WORD_GLOBAL_CACHE);
         cache.addListener(new AddElementListener());
         final Address address = labCacheManager.getAddress();
-        System.out.printf("Cache %s started on %s, cache members are now %s\n", CacheName.WORD_GLOBAL_CACHE, address,
-                cache.getAdvancedCache().getRpcManager().getMembers());
+        if (cache.getAdvancedCache().getRpcManager() != null) {
+            System.out.printf("Cache %s started on %s, cache members are now %s\n", CacheName.WORD_GLOBAL_CACHE, address,
+                    cache.getAdvancedCache().getRpcManager().getMembers());
+        }
         put(cache, address.toString(), "value");
 
         Thread putThread = new Thread() {
@@ -28,11 +30,7 @@ public class DistributedCacheClient {
             public void run() {
                 int counter = 0;
                 while (counter < 5) {
-                    try {
-                        cache.put(address.toString() + counter, address + "-" + counter);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    cache.put(address.toString() + counter, address + "-" + counter);
                     counter++;
 
                     try {
