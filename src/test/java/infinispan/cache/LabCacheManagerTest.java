@@ -1,7 +1,7 @@
-package infinispan;
+package infinispan.cache;
 
-import idv.woody.infinispan.CacheName;
-import idv.woody.infinispan.LabCacheManager;
+import idv.woody.infinispan.cache.CacheName;
+import idv.woody.infinispan.cache.LabCacheManager;
 import org.infinispan.Cache;
 import org.junit.After;
 import org.junit.Before;
@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.apache.commons.lang.RandomStringUtils.*;
+import static org.apache.commons.lang.RandomStringUtils.randomAlphanumeric;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 @RunWith(SpringJUnit4ClassRunner.class)

@@ -1,4 +1,4 @@
-package idv.woody.infinispan;
+package idv.woody.infinispan.cache;
 
 import org.infinispan.notifications.Listener;
 import org.infinispan.notifications.cachelistener.annotation.CacheEntryCreated;

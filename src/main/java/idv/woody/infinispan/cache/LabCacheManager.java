@@ -1,4 +1,4 @@
-package idv.woody.infinispan;
+package idv.woody.infinispan.cache;
 
 import org.infinispan.Cache;
 import org.infinispan.manager.DefaultCacheManager;

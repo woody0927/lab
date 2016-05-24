@@ -1,7 +1,7 @@
-package idv.woody.infinispan;
+package idv.woody.infinispan.cache;
 
 import com.google.common.collect.Lists;
-import idv.woody.ConfigurationService;
+import idv.woody.config.ConfigurationService;
 import org.infinispan.manager.DefaultCacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

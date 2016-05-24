@@ -1,4 +1,4 @@
-package idv.woody.infinispan;
+package idv.woody.infinispan.cache;
 
 public enum CacheName {
     WORD_LOCAL_CACHE,

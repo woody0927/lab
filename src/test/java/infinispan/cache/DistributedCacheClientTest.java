@@ -1,12 +1,9 @@
-package infinispan;
+package infinispan.cache;
 
-import idv.woody.infinispan.DistributedCacheClient;
-import org.apache.commons.lang.RandomStringUtils;
+import idv.woody.infinispan.cache.DistributedCacheClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -19,7 +16,8 @@ public class DistributedCacheClientTest {
     private DistributedCacheClient client;
     @Test
     public void testDistributedCache() throws IOException, InterruptedException {
-        // you can see the values are shared between jgroup channel if two clients are runing at the same time
+        // call run to simulate the cache data are shared among processes
+        // you can see the values are shared between jgroup channel if two clients are running at the same time
         client.run();
     }
 }

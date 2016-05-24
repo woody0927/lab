@@ -1,9 +1,16 @@
 <config xmlns="urn:org:jgroups"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="urn:org:jgroups http://www.jgroups.org/schema/JGroups-3.4.xsd">
+    <!-- A transport protocol (UDP, TCP) has all the resources of a stack:
+        the default thread pool, the OOB thread pool and the timer thread pool.
+        If we run multiple channels in the same JVM, instead of creating 4 separate stacks with a separate transport each,
+        we can create the transport protocol as a singleton protocol, shared by all 4 stacks.-->
+    <!-- To use shared transports, all we need to do is to add a property "singleton_name" to the transport configuration.
+        All channels with the same singleton name will be shared: -->
     <TCP
             bind_addr="localhost"
             bind_port="17900"
+            singleton_name="shared_tp"
             loopback="true"
             port_range="30"
             recv_buf_size="20m"
@@ -49,7 +56,12 @@
              ergonomics="false"
          />
     -->
-
+    <!-- Discovers the initial membership to determine coordinator. Join request will then be sent to coordinator.
+        localhost is designated member that will be used by TCPPING to lookup the initial membership.
+        The property bind_port in TCP means that each member should try to assign port 17900 for itself.
+        If this is not possible it will try the next higher port (17901) and so on, until it finds an unused port.
+        num_initial_members specifies the maximum number of responses to wait for unless timeout has expired. The default is 2.
+    -->
     <TCPPING timeout="3000"
              initial_hosts="localhost[17900]"
              port_range="10"
@@ -63,18 +75,28 @@
        num_initial_members="3"/>
      -->
 
+    <!-- Protocol to merge sub-groups into one group in case of a crash switch.
+         xxx__interval specifies how long should system wait before sending merge message. -->
     <MERGE2 max_interval="30000" min_interval="10000"/>
 
+    <!-- a failure detection/leave notification protocol based on a ring of TCP sockets created between group members.
+        -->
     <FD_SOCK/>
     <FD timeout="10000" max_tries="3"/>
     <VERIFY_SUSPECT timeout="10000"/>
 
+    <!--The NAKACK protocol is used for multicast messages. It uses negative acknowlegements (NAK).
+        Under this protocol, each message is tagged with a sequence number.
+        When a gap in the series of received sequence numbers is detected,
+        the receiver schedules a task to periodically ask the sender to retransmit the missing message -->
     <pbcast.NAKACK2 use_mcast_xmit="false"
                     xmit_interval="1000"
                     xmit_table_num_rows="100"
                     xmit_table_msgs_per_row="10000"
                     xmit_table_max_compaction_time="10000"
                     max_msg_batch_size="100"/>
+    <!-- The UNICAST protocol is used for unicast messages. It uses positive acknowlegements (ACK).
+        UNICAST is not necessary because TCP itself guarantees FIFO delivery of unicast messages -->
     <UNICAST3 xmit_interval="500"
               xmit_table_num_rows="20"
               xmit_table_msgs_per_row="10000"
@@ -82,12 +104,20 @@
               max_msg_batch_size="100"
               conn_expiry_timeout="0"/>
 
+    <!-- Distributed Garbage Collection In a JGroups cluster,
+        all nodes have to store all messages received for potential retransmission in case of a failure.  -->
     <pbcast.STABLE stability_delay="500" desired_avg_gossip="5000" max_bytes="1m"/>
+    <!-- Group Membership Service It maintains a list of active nodes. It handles the requests to join and leave the cluster.
+        It also handles the SUSPECT messages sent by failure detection protocols -->
     <pbcast.GMS print_local_addr="false" join_timeout="3000" view_bundling="true"/>
     <tom.TOA/> <!-- the TOA is only needed for total order transactions-->
 
     <UFC max_credits="2m" min_threshold="0.40"/>
     <MFC max_credits="2m" min_threshold="0.40"/>
+    <!-- This protocol fragments messages larger than certain size -->
     <FRAG2 frag_size="30k"/>
+    <!-- Protocol which implements synchronous messages (https://issues.jboss.org/browse/JGRP-1389).
+        A send of a message M with flag RSVP set will block until all non-faulty recipients
+        (one for unicasts, N for multicasts) have acked M, or until a timeout kicks in. -->
     <RSVP timeout="60000" resend_interval="500" ack_on_delivery="false" />
 </config>

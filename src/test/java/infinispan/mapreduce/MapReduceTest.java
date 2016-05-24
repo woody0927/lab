@@ -1,4 +1,4 @@
-package infinispan;
+package infinispan.mapreduce;
 
 import idv.woody.infinispan.MapReduceWordMapper;
 import idv.woody.infinispan.MapReduceWordReducer;
